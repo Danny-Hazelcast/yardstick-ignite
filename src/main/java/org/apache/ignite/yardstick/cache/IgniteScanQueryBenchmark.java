@@ -18,6 +18,7 @@
 package org.apache.ignite.yardstick.cache;
 
 import org.apache.ignite.IgniteDataStreamer;
+import org.apache.ignite.cache.query.QueryCursor;
 import org.apache.ignite.cache.query.ScanQuery;
 import org.apache.ignite.cache.query.SqlQuery;
 import org.apache.ignite.lang.IgniteBiPredicate;
@@ -61,14 +62,13 @@ public class IgniteScanQueryBenchmark extends IgniteCacheAbstractBenchmark {
 
         double maxSalary = salary + 1000;
 
-        Collection<Cache.Entry<Integer, Object>> entries = executeQuery(salary, maxSalary);
+        Collection<Person> entries = executeQuery(salary, maxSalary);
 
-        for (Cache.Entry<Integer, Object> entry : entries) {
-            Person p = (Person)entry.getValue();
-
+        for (Person p : entries) {
             if (p.getSalary() < salary || p.getSalary() > maxSalary)
                 throw new Exception("Invalid person retrieved [min=" + salary + ", max=" + maxSalary +
                         ", person=" + p + ']');
+            System.out.println(p.toString());
         }
 
         return true;
@@ -80,16 +80,18 @@ public class IgniteScanQueryBenchmark extends IgniteCacheAbstractBenchmark {
      * @return Query result.
      * @throws Exception If failed.
      */
-    private Collection<Cache.Entry<Integer, Object>> executeQuery(final double minSalary, final double maxSalary) throws Exception {
+    private Collection<Person> executeQuery(final double minSalary, final double maxSalary) throws Exception {
 
-        ScanQuery qry = new ScanQuery();
-        qry.setFilter(new IgniteBiPredicate<Integer, Person>() {
+
+        IgniteBiPredicate<Long, Person> filter = new IgniteBiPredicate<Long, Person>() {
             @Override
-            public boolean apply(Integer o, Person p) {
+            public boolean apply(Long key, Person p) {
                 return p.getSalary() >= minSalary && p.getSalary() <= maxSalary;
             }
-        });
+        };
 
-        return cache.query(qry).getAll();
+        QueryCursor<Person> cursor = cache.query(new ScanQuery(filter));
+
+        return cursor.getAll();
     }
 }
