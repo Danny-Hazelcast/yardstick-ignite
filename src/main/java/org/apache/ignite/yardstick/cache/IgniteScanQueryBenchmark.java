@@ -82,16 +82,26 @@ public class IgniteScanQueryBenchmark extends IgniteCacheAbstractBenchmark {
      */
     private Collection<Person> executeQuery(final double minSalary, final double maxSalary) throws Exception {
 
-
-        IgniteBiPredicate<Integer, Person> filter = new IgniteBiPredicate<Integer, Person>() {
-            @Override
-            public boolean apply(Integer key, Person p) {
-                return p.getSalary() >= minSalary && p.getSalary() <= maxSalary;
-            }
-        };
-
+        Filter filter = new Filter(minSalary, maxSalary);
         QueryCursor<Person> cursor = cache.query(new ScanQuery(filter));
 
         return cursor.getAll();
     }
+
+    public static class Filter  implements IgniteBiPredicate<Integer, Person> {
+
+        private double minSalary;
+        private double maxSalary;
+
+        public Filter(double minSalary, double maxSalary){
+            this.minSalary=minSalary;
+            this.maxSalary=maxSalary;
+        }
+
+        public boolean apply(Integer key, Person p) {
+            return p.getSalary() >= minSalary && p.getSalary() <= maxSalary;
+        }
+    };
+
+
 }
