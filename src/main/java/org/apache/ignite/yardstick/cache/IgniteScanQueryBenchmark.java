@@ -62,9 +62,12 @@ public class IgniteScanQueryBenchmark extends IgniteCacheAbstractBenchmark {
 
         double maxSalary = salary + 1000;
 
-        Collection<Person> entries = executeQuery(salary, maxSalary);
+        Collection entries = executeQuery(salary, maxSalary);
 
-        for (Person p : entries) {
+
+        for (Object o : entries) {
+            Cache.Entry e = (Cache.Entry) o;
+            Person p = (Person) e.getValue();
             if (p.getSalary() < salary || p.getSalary() > maxSalary)
                 throw new Exception("Invalid person retrieved [min=" + salary + ", max=" + maxSalary +
                         ", person=" + p + ']');
@@ -80,12 +83,12 @@ public class IgniteScanQueryBenchmark extends IgniteCacheAbstractBenchmark {
      * @return Query result.
      * @throws Exception If failed.
      */
-    private Collection<Person> executeQuery(final double minSalary, final double maxSalary) throws Exception {
+    private Collection<Object> executeQuery(final double minSalary, final double maxSalary) throws Exception {
 
         Filter filter = new Filter(minSalary, maxSalary);
         QueryCursor<Person> cursor = cache.query(new ScanQuery(filter));
 
-        return cursor.getAll();
+        return (Collection) cursor.getAll();
     }
 
     public static class Filter  implements IgniteBiPredicate<Integer, Person> {
