@@ -64,7 +64,6 @@ public class IgniteScanQueryBenchmark extends IgniteCacheAbstractBenchmark {
 
         Collection entries = executeQuery(salary, maxSalary);
 
-
         for (Object o : entries) {
             Cache.Entry e = (Cache.Entry) o;
             Person p = (Person) e.getValue();
