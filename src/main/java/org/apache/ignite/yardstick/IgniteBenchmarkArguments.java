@@ -17,93 +17,96 @@
 
 package org.apache.ignite.yardstick;
 
-import com.beust.jcommander.*;
-import org.apache.ignite.cache.*;
-import org.apache.ignite.internal.util.tostring.*;
-import org.apache.ignite.transactions.*;
+import org.apache.ignite.cache.CacheAtomicWriteOrderMode;
+import org.apache.ignite.cache.CacheWriteSynchronizationMode;
+import org.apache.ignite.internal.util.tostring.GridToStringBuilder;
+import org.apache.ignite.transactions.TransactionConcurrency;
+import org.apache.ignite.transactions.TransactionIsolation;
+
+import com.beust.jcommander.Parameter;
 
 /**
  * Input arguments for Ignite benchmarks.
  */
-@SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal"})
+@SuppressWarnings({ "UnusedDeclaration", "FieldCanBeLocal" })
 public class IgniteBenchmarkArguments {
     /** */
-    @Parameter(names = {"-nn", "--nodeNumber"}, description = "Node number")
+    @Parameter(names = { "-nn", "--nodeNumber" }, description = "Node number")
     private int nodes = 1;
 
     /** */
-    @Parameter(names = {"-b", "--backups"}, description = "Backups")
+    @Parameter(names = { "-b", "--backups" }, description = "Backups")
     private int backups;
 
-    @Parameter(names = {"-cfg", "--Config"}, description = "Configuration file")
+    @Parameter(names = { "-cfg", "--Config" }, description = "Configuration file")
     private String cfg = "config/ignite-localhost-config.xml";
 
     /** */
-    @Parameter(names = {"-sm", "--syncMode"}, description = "Synchronization mode")
+    @Parameter(names = { "-sm", "--syncMode" }, description = "Synchronization mode")
     private CacheWriteSynchronizationMode syncMode = CacheWriteSynchronizationMode.PRIMARY_SYNC;
 
     /** */
-    @Parameter(names = {"-cl", "--client"}, description = "Client flag")
+    @Parameter(names = { "-cl", "--client" }, description = "Client flag")
     private boolean clientOnly = false;
 
     /** */
-    @Parameter(names = {"-wom", "--writeOrderMode"}, description = "Write ordering mode")
+    @Parameter(names = { "-wom", "--writeOrderMode" }, description = "Write ordering mode")
     private CacheAtomicWriteOrderMode orderMode;
 
     /** */
-    @Parameter(names = {"-txc", "--txConcurrency"}, description = "Transaction concurrency")
+    @Parameter(names = { "-txc", "--txConcurrency" }, description = "Transaction concurrency")
     private TransactionConcurrency txConcurrency = TransactionConcurrency.OPTIMISTIC;
 
     /** */
-    @Parameter(names = {"-txi", "--txIsolation"}, description = "Transaction isolation")
+    @Parameter(names = { "-txi", "--txIsolation" }, description = "Transaction isolation")
     private TransactionIsolation txIsolation = TransactionIsolation.REPEATABLE_READ;
 
     /** */
-    @Parameter(names = {"-ot", "--offheapTiered"}, description = "Tiered offheap")
-    private boolean offheapTiered;
+    @Parameter(names = { "-ot", "--offheapTiered" }, description = "Tiered offheap")
+    private String offheapTiered;
 
     /** */
-    @Parameter(names = {"-ov", "--offheapValuesOnly"}, description = "Offheap values only")
+    @Parameter(names = { "-ov", "--offheapValuesOnly" }, description = "Offheap values only")
     private boolean offheapVals;
 
     /** */
-    @Parameter(names = {"-rtp", "--restPort"}, description = "REST TCP port")
+    @Parameter(names = { "-rtp", "--restPort" }, description = "REST TCP port")
     private int restTcpPort;
 
     /** */
-    @Parameter(names = {"-rth", "--restHost"}, description = "REST TCP host")
+    @Parameter(names = { "-rth", "--restHost" }, description = "REST TCP host")
     private String restTcpHost;
 
     /** */
-    @Parameter(names = {"-ss", "--syncSend"}, description = "Synchronous send")
+    @Parameter(names = { "-ss", "--syncSend" }, description = "Synchronous send")
     private boolean syncSnd;
 
     /** */
-    @Parameter(names = {"-r", "--range"}, description = "Key range")
+    @Parameter(names = { "-r", "--range" }, description = "Key range")
     private int range = 1_000_000;
 
     /** */
-    @Parameter(names = {"-j", "--jobs"}, description = "Number of jobs for compute benchmarks")
+    @Parameter(names = { "-j", "--jobs" }, description = "Number of jobs for compute benchmarks")
     private int jobs = 10;
 
     /** */
-    @Parameter(names = {"-cs", "--cacheStore"}, description = "Enable or disable cache store readThrough, writeThrough")
+    @Parameter(names = { "-cs", "--cacheStore" }, description = "Enable or disable cache store readThrough, writeThrough")
     private boolean storeEnabled;
 
     /** */
-    @Parameter(names = {"-wb", "--writeBehind"}, description = "Enable or disable writeBehind for cache store")
+    @Parameter(names = { "-wb", "--writeBehind" }, description = "Enable or disable writeBehind for cache store")
     private boolean writeBehind;
 
     /** */
-    @Parameter(names = {"-cn", "--cacheName"}, description = "Cache name")
+    @Parameter(names = { "-cn", "--cacheName" }, description = "Cache name")
     private String cacheName;
 
     /** */
-    @Parameter(names = {"-bch", "--batchSize"}, description = "Batch size")
+    @Parameter(names = { "-bch", "--batchSize" }, description = "Batch size")
     private int batchSize = 1_000;
 
     /** */
-    @Parameter(names = {"-nc", "--nearCache"}, description = "Near cache flag")
+    @Parameter(names = { "-nc", "--nearCache" }, description = "Near cache flag")
     private boolean nearCacheFlag = false;
 
     /**
@@ -173,7 +176,33 @@ public class IgniteBenchmarkArguments {
      * @return Offheap tiered.
      */
     public boolean isOffheapTiered() {
-        return offheapTiered;
+        return offheapTiered != null;
+    }
+
+    public long offHeapTieredMaxMemorySize() {
+        if (offheapTiered == null || offheapTiered.length() == 0) {
+            return 0L;
+        } else {
+            long mult;
+            switch (offheapTiered.charAt(offheapTiered.length() - 1)) {
+                case 'T':
+                    mult = 1024 * 1024 * 1024 * 1024;
+                    break;
+                case 'G':
+                    mult = 1024 * 1024 * 1024;
+                    break;
+                case 'M':
+                    mult = 1024 * 1024;
+                    break;
+                case 'K':
+                    mult = 1024;
+                    break;
+                default:
+                    mult = 1;
+                    break;
+            }
+            return Long.parseLong(offheapTiered.substring(0, offheapTiered.length() - 1)) * mult;
+        }
     }
 
     /**
@@ -187,7 +216,7 @@ public class IgniteBenchmarkArguments {
      * @return {@code True} if any offheap is enabled.
      */
     public boolean isOffHeap() {
-        return offheapTiered || offheapVals;
+        return isOffheapTiered() || offheapVals;
     }
 
     /**
@@ -258,11 +287,12 @@ public class IgniteBenchmarkArguments {
      */
     public String description() {
         return "-nn=" + nodes + "-b=" + backups + "-sm=" + syncMode + "-cl=" + clientOnly + "-nc=" + nearCacheFlag +
-            (orderMode == null ? "" : "-wom=" + orderMode) + "-txc=" + txConcurrency + "-cn=" + cacheName;
+                (orderMode == null ? "" : "-wom=" + orderMode) + "-txc=" + txConcurrency + "-cn=" + cacheName;
     }
 
     /** {@inheritDoc} */
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return GridToStringBuilder.toString(IgniteBenchmarkArguments.class, this);
     }
 }
