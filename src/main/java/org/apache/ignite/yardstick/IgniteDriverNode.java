@@ -17,13 +17,18 @@
 
 package org.apache.ignite.yardstick;
 
-import org.apache.ignite.*;
-import org.apache.ignite.cache.eviction.lru.*;
-import org.apache.ignite.configuration.*;
-import org.apache.ignite.spi.communication.tcp.*;
-import org.yardstickframework.*;
+import static org.apache.ignite.cache.CacheMemoryMode.OFFHEAP_VALUES;
 
-import static org.apache.ignite.cache.CacheMemoryMode.*;
+import org.apache.ignite.Ignite;
+import org.apache.ignite.Ignition;
+import org.apache.ignite.cache.eviction.lru.LruEvictionPolicy;
+import org.apache.ignite.configuration.CacheConfiguration;
+import org.apache.ignite.configuration.ConnectorConfiguration;
+import org.apache.ignite.configuration.IgniteConfiguration;
+import org.apache.ignite.configuration.TransactionConfiguration;
+import org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi;
+import org.yardstickframework.BenchmarkConfiguration;
+import org.yardstickframework.BenchmarkUtils;
 
 /**
  * Standalone Ignite node.
@@ -44,7 +49,8 @@ public class IgniteDriverNode extends IgniteNode {
     }
 
     /** {@inheritDoc} */
-    @Override public void start(BenchmarkConfiguration cfg) throws Exception {
+    @Override
+    public void start(BenchmarkConfiguration cfg) throws Exception {
         IgniteBenchmarkArguments args = new IgniteBenchmarkArguments();
 
         BenchmarkUtils.jcommander(cfg.commandLineArguments(), args, "<ignite-node>");
@@ -61,9 +67,9 @@ public class IgniteDriverNode extends IgniteNode {
                 continue;
 
             // IgniteNode can not run in CLIENT_ONLY mode,
-            // except the case when it's used inside IgniteAbstractBenchmark.
-            boolean cl = args.isClientOnly() && !args.isNearCache() && !clientMode ?
-                false : args.isClientOnly();
+            // except the case when it's used inside
+            // IgniteAbstractBenchmark.
+            boolean cl = args.isClientOnly() && !args.isNearCache() && !clientMode ? false : args.isClientOnly();
 
             if (cl)
                 c.setClientMode(true);
@@ -87,12 +93,20 @@ public class IgniteDriverNode extends IgniteNode {
             }
 
             if (args.isOffHeap()) {
-                cc.setOffHeapMaxMemory(0);
+                if (args.isOffheapTiered()) {
+                    cc.setOffHeapMaxMemory(args.offHeapTieredMaxMemorySize());
+                } else {
+                    cc.setOffHeapMaxMemory(0);
+                }
 
-                if (args.isOffheapValues())
+                if (args.isOffheapValues()) {
                     cc.setMemoryMode(OFFHEAP_VALUES);
-                else
-                    cc.setEvictionPolicy(new LruEvictionPolicy(50000));
+                } else {
+                    LruEvictionPolicy lru = new LruEvictionPolicy(0);
+                    lru.setMaxMemorySize((long) (args.offHeapTieredMaxMemorySize() * 0.95));
+                    cc.setEvictionPolicy(lru);
+                    cc.setSwapEnabled(false);
+                }
             }
 
             cc.setReadThrough(args.isStoreEnabled());
@@ -113,7 +127,7 @@ public class IgniteDriverNode extends IgniteNode {
         tc.setDefaultTxConcurrency(args.txConcurrency());
         tc.setDefaultTxIsolation(args.txIsolation());
 
-        TcpCommunicationSpi commSpi = (TcpCommunicationSpi)c.getCommunicationSpi();
+        TcpCommunicationSpi commSpi = (TcpCommunicationSpi) c.getCommunicationSpi();
 
         if (commSpi == null)
             commSpi = new TcpCommunicationSpi();
