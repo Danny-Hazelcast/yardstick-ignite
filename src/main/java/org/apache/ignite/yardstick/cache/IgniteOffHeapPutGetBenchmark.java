@@ -32,7 +32,7 @@ import static org.yardstickframework.BenchmarkUtils.println;
 public class IgniteOffHeapPutGetBenchmark extends IgniteCacheAbstractBenchmark {
 
     private static final int MAX_BYTES = 75_000;
-    private final byte[][] byteArrays = new byte[10][];
+    private static final byte[][] byteArrays = new byte[10][];
 
     @Override public void setUp(BenchmarkConfiguration cfg) throws Exception {
         super.setUp(cfg);
