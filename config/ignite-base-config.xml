@@ -52,6 +52,20 @@
                 </bean>
 
                 <bean class="org.apache.ignite.configuration.CacheConfiguration">
+                    <property name="name" value="1g-atomic-offheap"/>
+
+                    <property name="cacheMode" value="PARTITIONED"/>
+
+                    <property name="atomicityMode" value="ATOMIC"/>
+
+                    <property name="swapEnabled" value="false"/>
+
+                    <property name="memoryMode" value="OFFHEAP_TIERED"/>
+
+                    <property name="offHeapMaxMemory" value="#{1 * 1024L * 1024L * 1024L}"/>
+                </bean>
+
+                <bean class="org.apache.ignite.configuration.CacheConfiguration">
                     <property name="name" value="atomic-offheap-values"/>
 
                     <property name="cacheMode" value="PARTITIONED"/>
