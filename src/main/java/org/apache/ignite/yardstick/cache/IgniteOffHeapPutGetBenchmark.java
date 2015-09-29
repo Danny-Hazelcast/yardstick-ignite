@@ -19,7 +19,12 @@ package org.apache.ignite.yardstick.cache;
 
 import java.util.Map;
 
+import org.apache.ignite.IgniteDataStreamer;
 import org.apache.ignite.yardstick.cache.model.BigValue;
+import org.apache.ignite.yardstick.cache.model.Person;
+import org.yardstickframework.BenchmarkConfiguration;
+
+import static org.yardstickframework.BenchmarkUtils.println;
 
 /**
  * Ignite benchmark that performs put and get operations.
@@ -29,11 +34,16 @@ public class IgniteOffHeapPutGetBenchmark extends IgniteCacheAbstractBenchmark {
     private static final int MAX_BYTES = 75_000;
     private final byte[][] byteArrays = new byte[10][];
 
-    public IgniteOffHeapPutGetBenchmark() {
+    @Override public void setUp(BenchmarkConfiguration cfg) throws Exception {
+        super.setUp(cfg);
+
+        println(cfg, "Populating put values (byteArrays)");
+
         for (int i = 0, s = MAX_BYTES; i < byteArrays.length; i++, s /= 2) {
             byteArrays[i] = new byte[s];
         }
     }
+
 
     /** {@inheritDoc} */
     @Override
