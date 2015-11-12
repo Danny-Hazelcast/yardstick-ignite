@@ -81,6 +81,19 @@
             <artifactId>yardstick</artifactId>
             <version>${yardstick.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-core</artifactId>
+            <version>${yardstick.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-spring</artifactId>
+            <version>${yardstick.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

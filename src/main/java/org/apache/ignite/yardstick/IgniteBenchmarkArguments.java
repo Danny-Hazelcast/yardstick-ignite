@@ -136,6 +136,19 @@ public class IgniteBenchmarkArguments {
     @Parameter(names = {"-kpt", "--keysPerThread"}, description = "Use not intersecting keys in putAll benchmark")
     private boolean keysPerThread;
 
+
+
+    /** */
+    @Parameter(names = {"-cn", "--cacheName"}, description = "Cache name to use in benchmarks")
+    private String cacheName;
+
+    /** */
+    @Parameter(names = {"-bch", "--batchSize"}, description = "Batch size")
+    private int batchSize = 1_000;
+
+
+
+
     /**
      * @return JDBC url.
      */
@@ -340,6 +353,24 @@ public class IgniteBenchmarkArguments {
             (orderMode == null ? "" : "-wom=" + orderMode) + "-txc=" + txConcurrency + "-rd=" + restartDelay +
             "-rs=" + restartSleep;
     }
+
+
+    /**
+     * @return Cache name.
+    */
+    public String cacheName() {
+        return cacheName;
+    }
+
+    /**
+    * @return Batch size.
+    */
+    public int batchSize() {
+        return batchSize;
+    }
+
+
+
 
     /** {@inheritDoc} */
     @Override public String toString() {

@@ -20,7 +20,9 @@ package org.apache.ignite.yardstick;
 import org.apache.ignite.*;
 import org.apache.ignite.cache.eviction.lru.*;
 import org.apache.ignite.configuration.*;
+import org.apache.ignite.lang.IgniteBiTuple;
 import org.apache.ignite.spi.communication.tcp.*;
+import org.springframework.context.ApplicationContext;
 import org.yardstickframework.*;
 
 import static org.apache.ignite.cache.CacheMemoryMode.*;
@@ -49,7 +51,8 @@ public class IgniteDriverNode extends IgniteNode {
 
         BenchmarkUtils.jcommander(cfg.commandLineArguments(), args, "<ignite-node>");
 
-        IgniteConfiguration c = loadConfiguration(args.configuration());
+        IgniteBiTuple<IgniteConfiguration, ? extends ApplicationContext> tuple = loadConfiguration(args.configuration());
+        IgniteConfiguration c = tuple.get1();
 
         assert c != null;
 

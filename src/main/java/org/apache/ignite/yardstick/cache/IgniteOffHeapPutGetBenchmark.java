@@ -19,6 +19,7 @@ package org.apache.ignite.yardstick.cache;
 
 import java.util.Map;
 
+import org.apache.ignite.IgniteCache;
 import org.apache.ignite.IgniteDataStreamer;
 import org.apache.ignite.yardstick.cache.model.BigValue;
 import org.apache.ignite.yardstick.cache.model.Person;
@@ -59,4 +60,10 @@ public class IgniteOffHeapPutGetBenchmark extends IgniteCacheAbstractBenchmark {
 
         return true;
     }
+
+    /** {@inheritDoc} */
+    @Override protected IgniteCache<Integer, Object> cache() {
+        return ignite().cache("offHeap");
+    }
+
 }

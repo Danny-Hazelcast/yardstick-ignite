@@ -39,4 +39,10 @@ public class IgniteStreamingBenchmark extends IgniteCacheAbstractBenchmark {
 
         return true;
     }
+
+    /** {@inheritDoc} */
+    @Override protected IgniteCache<Integer, Object> cache() {
+        return ignite().cache("stream");
+    }
+
 }

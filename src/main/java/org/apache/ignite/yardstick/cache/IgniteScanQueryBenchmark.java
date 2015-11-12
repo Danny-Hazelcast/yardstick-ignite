@@ -17,6 +17,7 @@
 
 package org.apache.ignite.yardstick.cache;
 
+import org.apache.ignite.IgniteCache;
 import org.apache.ignite.IgniteDataStreamer;
 import org.apache.ignite.cache.query.QueryCursor;
 import org.apache.ignite.cache.query.ScanQuery;
@@ -39,6 +40,7 @@ public class IgniteScanQueryBenchmark extends IgniteCacheAbstractBenchmark {
     /** {@inheritDoc} */
     @Override public void setUp(BenchmarkConfiguration cfg) throws Exception {
         super.setUp(cfg);
+
 
         println(cfg, "Populating query data...");
 
@@ -104,5 +106,10 @@ public class IgniteScanQueryBenchmark extends IgniteCacheAbstractBenchmark {
         }
     };
 
+
+    /** {@inheritDoc} */
+    @Override protected IgniteCache<Integer, Object> cache() {
+        return ignite().cache("scan");
+    }
 
 }

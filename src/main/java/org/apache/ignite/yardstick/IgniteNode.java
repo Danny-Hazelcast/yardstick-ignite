@@ -49,7 +49,7 @@ import static org.apache.ignite.cache.CacheMemoryMode.OFFHEAP_VALUES;
  */
 public class IgniteNode implements BenchmarkServer {
     /** Grid instance. */
-    private Ignite ignite;
+    public Ignite ignite;
 
     /** Client mode. */
     private boolean clientMode;
@@ -157,7 +157,7 @@ public class IgniteNode implements BenchmarkServer {
      * @return Tuple with grid configuration and Spring application context.
      * @throws Exception If failed.
      */
-    private static IgniteBiTuple<IgniteConfiguration, ? extends ApplicationContext> loadConfiguration(String springCfgPath)
+    public static IgniteBiTuple<IgniteConfiguration, ? extends ApplicationContext> loadConfiguration(String springCfgPath)
         throws Exception {
         URL url;
 
