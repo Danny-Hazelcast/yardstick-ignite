@@ -143,7 +143,7 @@ public class IgniteBenchmarkArguments {
     private String cacheName;
 
     /** */
-    @Parameter(names = {"-bch", "--batchSize"}, description = "Batch size")
+    @Parameter(names = {"-bch", "--batchSize2"}, description = "Batch size")
     private int batchSize = 1_000;
 
 
