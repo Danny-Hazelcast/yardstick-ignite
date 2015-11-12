@@ -144,7 +144,7 @@ public class IgniteBenchmarkArguments {
 
     /** */
     @Parameter(names = {"-bch", "--batchSize2"}, description = "Batch size")
-    private int batchSize = 1_000;
+    private int batchSize = 1000;
 
 
 
