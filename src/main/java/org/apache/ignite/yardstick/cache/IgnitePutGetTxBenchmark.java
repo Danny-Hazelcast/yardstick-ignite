@@ -17,15 +17,15 @@
 
 package org.apache.ignite.yardstick.cache;
 
-import org.apache.ignite.transactions.*;
-import org.apache.ignite.yardstick.cache.model.*;
-
-import java.util.*;
+import java.util.Map;
+import org.apache.ignite.IgniteCache;
+import org.apache.ignite.transactions.Transaction;
+import org.apache.ignite.yardstick.cache.model.SampleValue;
 
 /**
  * Ignite benchmark that performs transactional put and get operations.
  */
-public class IgnitePutGetTxBenchmark extends IgniteCacheAbstractBenchmark {
+public class IgnitePutGetTxBenchmark extends IgniteCacheAbstractBenchmark<Integer, Object> {
     /** {@inheritDoc} */
     @Override public boolean test(Map<Object, Object> ctx) throws Exception {
         int key = nextRandom(0, args.range() / 2);
@@ -42,5 +42,10 @@ public class IgnitePutGetTxBenchmark extends IgniteCacheAbstractBenchmark {
         }
 
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override protected IgniteCache<Integer, Object> cache() {
+        return ignite().cache("tx");
     }
 }

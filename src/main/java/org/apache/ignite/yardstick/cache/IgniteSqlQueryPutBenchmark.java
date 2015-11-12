@@ -17,18 +17,19 @@
 
 package org.apache.ignite.yardstick.cache;
 
-import org.apache.ignite.cache.query.*;
-import org.apache.ignite.yardstick.cache.model.*;
-import org.yardstickframework.*;
-
-import javax.cache.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+import javax.cache.Cache;
+import org.apache.ignite.IgniteCache;
+import org.apache.ignite.cache.query.SqlQuery;
+import org.apache.ignite.yardstick.cache.model.Person;
+import org.yardstickframework.BenchmarkConfiguration;
 
 /**
  * Ignite benchmark that performs put and query operations.
  */
-public class IgniteSqlQueryPutBenchmark extends IgniteCacheAbstractBenchmark {
+public class IgniteSqlQueryPutBenchmark extends IgniteCacheAbstractBenchmark<Integer, Object> {
     /** {@inheritDoc} */
     @Override public void setUp(BenchmarkConfiguration cfg) throws Exception {
         super.setUp(cfg);
@@ -74,5 +75,10 @@ public class IgniteSqlQueryPutBenchmark extends IgniteCacheAbstractBenchmark {
         qry.setArgs(minSalary, maxSalary);
 
         return cache.query(qry).getAll();
+    }
+
+    /** {@inheritDoc} */
+    @Override protected IgniteCache<Integer, Object> cache() {
+        return ignite().cache("query");
     }
 }
