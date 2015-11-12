@@ -1,89 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-
-<!--
-    POM file.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.apache.ignite</groupId>
-    <artifactId>ignite-yardstick</artifactId>
-    <version>0.1.0</version>
+    <groupId>org.yardstickframework.gridgain</groupId>
+    <artifactId>yardstick-gridgain</artifactId>
+    <name>Yardstick GridGain</name>
+    <version>0.7.0</version>
+
+    <url>https://github.com/gridgain/yardstick-gridgain</url>
+    <description>The set of GridGain benchmarks written by using Yardstick framework.</description>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/gridgain/yardstick-gridgain</url>
+        <connection>scm:git:git://github.com/gridgain/yardstick-gridgain.git</connection>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>gridgain</id>
+            <name>GridGain</name>
+            <email>mvncentral@gridgain.com</email>
+        </developer>
+    </developers>
 
     <properties>
-        <yardstick.version>0.7.0</yardstick.version>
-        <ignite.version>1.2.0-incubating</ignite.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <yardstick.version>RELEASE</yardstick.version>
+        <gridgain.version>RELEASE</gridgain.version>
     </properties>
+
+    <!--
+        Uncomment this if Enterprise Edition is used.
+    -->
+    <!--
+    <repositories>
+        <repository>
+            <id>GridGain External Repository</id>
+            <url>http://www.gridgainsystems.com/nexus/content/repositories/external</url>
+        </repository>
+    </repositories>
+    -->
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.ignite</groupId>
-            <artifactId>ignite-core</artifactId>
-            <version>${ignite.version}</version>
+            <groupId>org.gridgain</groupId>
+            <artifactId>gridgain-fabric</artifactId>
+            <!-- Replace the artifact above with the commented one if Enterprise Edition is used. -->
+            <!--
+            <artifactId>gridgain-fabric-ent</artifactId>
+            -->
+            <version>${gridgain.version}</version>
+            <type>pom</type>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.ignite</groupId>
-            <artifactId>ignite-spring</artifactId>
-            <version>${ignite.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.ignite</groupId>
-            <artifactId>ignite-aws</artifactId>
-            <version>${ignite.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.ignite</groupId>
-            <artifactId>ignite-indexing</artifactId>
-            <version>${ignite.version}</version>
-          </dependency>
 
         <dependency>
             <groupId>org.yardstickframework</groupId>
             <artifactId>yardstick</artifactId>
             <version>${yardstick.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.32</version>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>2.8</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
@@ -154,14 +155,6 @@
                             </includes>
                         </fileset>
                     </filesets>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-                <configuration>
-                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
