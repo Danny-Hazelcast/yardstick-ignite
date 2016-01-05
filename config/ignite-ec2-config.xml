@@ -31,16 +31,15 @@
     </bean>
 
     <bean id="grid.cfg" class="org.apache.ignite.configuration.IgniteConfiguration" parent="base-ignite.cfg">
+
         <property name="discoverySpi">
             <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
                 <property name="ipFinder">
-                    <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.s3.TcpDiscoveryS3IpFinder">
-                        <property name="bucketName" value="ignite-benchmark"/>
-                        <property name="awsCredentials">
-                            <bean class="com.amazonaws.auth.BasicAWSCredentials">
-                                <constructor-arg value="${AWS_ACCESS_KEY}"/>
-                                <constructor-arg value="${AWS_SECRET_KEY}"/>
-                            </bean>
+                    <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">
+                        <property name="addresses">
+                            <list>
+                               <!--MEMBERS-->
+                            </list>
                         </property>
                     </bean>
                 </property>
